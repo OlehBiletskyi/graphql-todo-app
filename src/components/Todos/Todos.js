@@ -7,8 +7,8 @@ export function Todos () {
   if (loading) return <>Loading...</>
   if (error) return <>{error.message}</>
   return (
-    <div>
-      {data?.todos?.map((item) => <p key={item.id}>{item.type}</p>)}
-    </div>
+    <ol>
+      {data?.todos?.map((item) => <li key={item.id}>{item.type}</li>)}
+    </ol>
   )
 }

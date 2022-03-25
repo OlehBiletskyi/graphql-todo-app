@@ -1,16 +1,26 @@
 import { useState } from 'react';
+import { useAddTodo } from '../../graphql';
 
 export function AddTodo() {
 
-  const [inputValue, setInputValue] = useState('buy milk')
+  const [inputValue, setInputValue] = useState('');
+  const [addTodo, {loading, error } ] = useAddTodo({
+      variables: {
+        type: inputValue
+      }
+    })
 
-  function addTodo(event) {
+
+
+  function submit(event) {
     event.preventDefault();
-    console.log(inputValue);
+    addTodo();
   }
 
+  if (loading) return <div>Loading adding todo ...</div>
+  if (error) return <div>ERROR: {error.message}</div>
   return (
-    <form onSubmit={addTodo}>
+    <form onSubmit={submit}>
       <input
         type="text"
         value={inputValue}

@@ -8,7 +8,9 @@ function App() {
     <ApolloProvider client={client}>
       <div className="App">
         <AddTodo />
+        <div>**********************************</div>
         <Todos />
+        <div>**********************************</div>
       </div>
     </ApolloProvider>
 
