@@ -1,26 +1,28 @@
 import { useState } from 'react';
-import { useAddTodo } from '../../graphql';
+import { GET_TODOS, useAddTodo } from '../../graphql';
 
 export function AddTodo() {
 
   const [inputValue, setInputValue] = useState('');
-  const [addTodo, {loading, error } ] = useAddTodo({
+  const [addTodoMutationFunc, {loading, error } ] = useAddTodo({
       variables: {
         type: inputValue
-      }
+      },
+      //request data again for updating to-do list
+      refetchQueries: [GET_TODOS,'getTodos']
     })
 
 
-
-  function submit(event) {
+  const submitForm = (event) => {
     event.preventDefault();
-    addTodo();
+    addTodoMutationFunc();
+    setInputValue('')
   }
 
   if (loading) return <div>Loading adding todo ...</div>
   if (error) return <div>ERROR: {error.message}</div>
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={submitForm}>
       <input
         type="text"
         value={inputValue}
