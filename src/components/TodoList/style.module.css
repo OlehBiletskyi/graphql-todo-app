@@ -1,0 +1,18 @@
+.list {
+  margin-top: 40px;
+  width: 100%;
+}
+
+.listItem {
+  font-size: 22px;
+  color: bisque;
+  margin-bottom: 10px;
+}
+
+.loading {
+  margin-top: 50px;
+}
+
+.error {
+  composes: loading;
+}

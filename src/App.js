@@ -1,19 +1,18 @@
-import './App.css';
-import { ApolloProvider } from '@apollo/client';
 import { client } from './graphql';
-import { AddTodo, Todos } from './components';
+import { ApolloProvider } from '@apollo/client';
+import { Container } from '@mui/material';
+import { Main } from './pages/Main/Main';
+import { Title } from './components';
+import './App.css';
 
 function App() {
   return (
     <ApolloProvider client={client}>
-      <div className="App">
-        <AddTodo />
-        <div>**********************************</div>
-        <Todos />
-        <div>**********************************</div>
-      </div>
+      <Container className='App' maxWidth='xl'>
+        <Title />
+        <Main/>
+      </Container>
     </ApolloProvider>
-
   );
 }
 
