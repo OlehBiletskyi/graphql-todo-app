@@ -5,7 +5,6 @@ import styles from "./style.module.css";
 export function TodoList () {
 
   const  { loading, error, data } = useGetTodos();
-
   if (loading) return <CircularProgress className={styles.loading}/>
   if (error) return <Alert severity="error" className={styles.loading}>{error.message}</Alert>
   return (

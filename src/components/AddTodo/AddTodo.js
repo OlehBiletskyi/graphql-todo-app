@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { GET_TODOS, useAddTodo } from '../../graphql';
+import { ADD_TODO, GET_TODOS, useAddTodo } from '../../graphql';
+import { gql, useApolloClient } from '@apollo/client';
+import { Button, CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { Button, CircularProgress } from '@mui/material';
 import styles from "./index.module.css";
 
 export function AddTodo() {
+
+  const client = useApolloClient();
 
   const [inputValue, setInputValue] = useState('');
   const [addTodoMutationFunc, {loading, error, reset } ] = useAddTodo({
@@ -14,13 +17,73 @@ export function AddTodo() {
       },
       errorPolicy: "ignore",
       //request data again for updating to-do list
-      refetchQueries: [GET_TODOS,'getTodos']
+      // refetchQueries: [GET_TODOS,'getTodos'],
+
+      // update(cache, { data: {addTodoMutationFunc} }) {
+      //   cache.modify({
+      //     fields: {
+      //       todos(existingTodos = []) {
+      //         const newTodoRef = cache.writeFragment({
+      //           data: addTodoMutationFunc,
+      //           fragment: gql`
+      //             fragment NewTodo on Todo {
+      //               id
+      //               type
+      //             }
+      //           `
+      //         });
+      //         return [...existingTodos, newTodoRef];
+      //       }
+      //     }
+      //   });
+      // }
     })
 
   const submitForm = (event) => {
     event.preventDefault();
     if (inputValue !== '') {
-      addTodoMutationFunc();
+      addTodoMutationFunc()
+        .then((res)=>{
+          console.log(res, 'res');
+
+
+          const getTodosReadQuery  = client.readQuery({
+            query: GET_TODOS
+          });
+
+          client.writeQuery({
+            query: GET_TODOS,
+            data: {
+                todos: [...getTodosReadQuery?.todos, res.data?.addTodo]
+              }
+          });
+
+/*
+          const getTodosReadFragment = client.readFragment({
+            fragment: gql`
+              fragment readTodosFragment on Todo {
+                id
+                type
+              }
+              `,
+            id:`Todo:${res.data.addTodo.id}`
+          });
+*/
+/*
+          client.writeFragment({
+            id: `Todo:${res.data.addTodo.id}`,
+            fragment: gql`
+              fragment writeTodosFragment on Todo {
+                id
+                type
+              }
+            `,
+            data: {
+              todos: [...getTodosReadFragment?.todos, res.data?.addTodo]
+            }
+          })
+*/
+        });
       setInputValue('');
     }
   }
